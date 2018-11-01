@@ -49,22 +49,16 @@ module.exports = buildFlow.create()
         var lang = this._lang,
             langname = lang + '.js',
             result = {},
-            files = [].concat(i18nFiles).concat(i18nDirs
-                    .reduce(function (prev, dir) {
-                        return prev.concat(dir.files);
-                    }, [])
-                    .filter(function (file) {
-                        return [langname, 'all.js'].indexOf(file.name) > -1;
-                    })
-                    .sort(function (file1, file2) {
-                        if (file1.name === 'all.js') {
-                            return -1;
-                        }
-                        if (file2.name === 'all.js') {
-                            return 1;
-                        }
-                        return 0;
-                    })
+            allFiles = [].concat(i18nFiles).concat(i18nDirs
+                .reduce(function (prev, dir) {
+                    return prev.concat(dir.files);
+                }, [])
+                .filter(function (file) {
+                    return [langname, 'all.js'].indexOf(file.name) > -1;
+                })),
+            files = [].concat(
+                allFiles.filter(f => f.name === 'all.js'),
+                allFiles.filter(f => f.name !== 'all.js')
             );
 
         return vow.all(files.map(function (file) {
